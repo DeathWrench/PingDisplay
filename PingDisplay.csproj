@@ -12,12 +12,6 @@
 		<ReferencePath>$(ReferencePath);$(LethalCompanyPath)\Lethal Company_Data\Plugins</ReferencePath>
 		<ReferencePath>$(ReferencePath);$(LethalCompanyPath)\BepinEx\plugins</ReferencePath>
 	</PropertyGroup>
-	
-    <ItemGroup>
-      <Compile Remove="WikiBuilder\**" />
-      <EmbeddedResource Remove="WikiBuilder\**" />
-      <None Remove="WikiBuilder\**" />
-    </ItemGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
 		<GenerateAssemblyInfo>False</GenerateAssemblyInfo>
