@@ -41,9 +41,9 @@ namespace PingDisplay
             }
 
             // Initialize config settings
-            SetupConfig(pingEnabledConfig = Instance.Config.Bind("General","Ping Enabled",true,"Toggle to enable/disable ping display"), value => _displayText.enabled = value);
-            SetupConfig(displayPositionConfig = Config.Bind("General","Display Position",DisplayPosition.TopRight, "Where on the HUD to display your latency"), PositionDisplay);
-            SetupConfig(fontSizeConfig = Config.Bind("General","Font Size",12,""), value => _displayText.fontSize = value);
+            SetupConfig(pingEnabledConfig = Instance.Config.Bind("General", "Ping Enabled", true, "Toggle to enable/disable ping display"), value => _displayText.enabled = value);
+            SetupConfig(displayPositionConfig = Config.Bind("General", "Display Position", DisplayPosition.TopRight, "Where on the HUD to display your latency"), PositionDisplay);
+            SetupConfig(fontSizeConfig = Config.Bind("General", "Font Size", 12, ""), value => _displayText.fontSize = value);
 
             if (pingEnabledConfig.Value)
             {
@@ -200,4 +200,3 @@ namespace PingDisplay
         }
     }
 }
-
