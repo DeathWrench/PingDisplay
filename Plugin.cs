@@ -33,7 +33,7 @@ namespace PingDisplay
 
         private readonly Harmony _harmony = new Harmony("DeathWrench.PingDisplay");
 
-        public void Start()
+        public void Awake()
         {
             if (Instance == null)
             {
