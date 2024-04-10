@@ -11,7 +11,7 @@ using Unity.Netcode;
 namespace PingDisplay
 {
 
-    [BepInPlugin("DeathWrench.PingDisplay", "PingDisplay", "1.3.1")]
+    [BepInPlugin("DeathWrench.PingDisplay", "PingDisplay", "1.3.2")]
     public class Plugin : BaseUnityPlugin
     {
         public enum DisplayPosition
