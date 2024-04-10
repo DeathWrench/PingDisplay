@@ -145,7 +145,7 @@ namespace PingDisplay
             [HarmonyPostfix]
             private static void PatchHudManagerUpdate(ref HUDManager __instance)
             {
-                if (!pingEnabledConfig.Value)
+                if (!pingEnabledConfig.Value || _displayText == null)
                     return;
 
                 if (__instance.NetworkManager.IsHost)
