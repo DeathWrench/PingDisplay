@@ -6,11 +6,9 @@ using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
-using Unity.Netcode;
 
 namespace PingDisplay
 {
-
     [BepInPlugin("DeathWrench.PingDisplay", "PingDisplay", "1.3.2")]
     public class Plugin : BaseUnityPlugin
     {
@@ -21,12 +19,15 @@ namespace PingDisplay
             BottomLeft,
             BottomRight
         }
+
         // Define config entries
         public static ConfigEntry<bool> pingEnabledConfig;
+
         public static ConfigEntry<int> fontSizeConfig;
         public static ConfigEntry<DisplayPosition> displayPositionConfig;
         public static float Margin; // Example value, adjust as needed
 
+        public static GameObject textGameObject;
         public static TextMeshProUGUI _displayText;
         public static Plugin Instance;
         public static PingManager PingManager;
@@ -39,12 +40,10 @@ namespace PingDisplay
             {
                 Instance = this;
             }
-
             // Initialize config settings
             SetupConfig(pingEnabledConfig = Instance.Config.Bind("General", "Ping Enabled", true, "Toggle to enable/disable ping display"), value => _displayText.enabled = value);
             SetupConfig(displayPositionConfig = Config.Bind("General", "Display Position", DisplayPosition.TopRight, "Where on the HUD to display your latency"), PositionDisplay);
             SetupConfig(fontSizeConfig = Config.Bind("General", "Font Size", 12, ""), value => _displayText.fontSize = value);
-
             if (pingEnabledConfig.Value)
             {
                 _harmony.PatchAll(typeof(HudManagerPatch));
@@ -52,10 +51,12 @@ namespace PingDisplay
             InitPingManager();
             base.Logger.LogInfo("Ping Display loaded!");
         }
-        static void SetupConfig<T>(ConfigEntry<T> config, Action<T> changedHandler)
+
+        private static void SetupConfig<T>(ConfigEntry<T> config, Action<T> changedHandler)
         {
-            config.SettingChanged += (_, _) => changedHandler(config.Value);
+            config.SettingChanged += (_, __) => changedHandler(config.Value);
         }
+
         private void InitPingManager()
         {
             GameObject gameObject = new GameObject("PingManager");
@@ -70,7 +71,7 @@ namespace PingDisplay
             Instance.Logger.LogInfo(message);
         }
 
-        static void PositionDisplay(DisplayPosition position)
+        private static void PositionDisplay(DisplayPosition position)
         {
             if (_displayText == null) return;
 
@@ -145,8 +146,11 @@ namespace PingDisplay
             [HarmonyPostfix]
             private static void PatchHudManagerUpdate(ref HUDManager __instance)
             {
-                if (!pingEnabledConfig.Value || _displayText == null)
+
+                if (!pingEnabledConfig.Value)
                     return;
+
+                if (!_displayText) { _displayText = textGameObject.GetComponent<TextMeshProUGUI>(); return; } //If it cannot find _displaytext, it will try to find it again and return to avoid errors
 
                 if (__instance.NetworkManager.IsHost)
                 {
@@ -182,20 +186,20 @@ namespace PingDisplay
         {
             while (StartOfRound.Instance == null)
             {
-                yield return new WaitForSeconds(3f);
+                yield return null;
             }
             for (; ; )
             {
-                if (SteamNetworkingUtils.LocalPingLocation != null && SteamNetworkingUtils.LocalPingLocation != null)
+                if (SteamNetworkingUtils.LocalPingLocation != null && SteamNetworkingUtils.LocalPingLocation.HasValue) //If there is no ping value yet don't fetch a ping value
                 {
-                    Ping = SteamNetworkingUtils.EstimatePingTo(SteamNetworkingUtils.LocalPingLocation.Value);
+                    Ping = SteamNetworkingUtils.EstimatePingTo(SteamNetworkingUtils.LocalPingLocation.Value); //Commented the code below out because i personally think it's unnecessary, feel free to revert my changes
                     yield return new WaitForSeconds(0.5f);
                 }
-                else
-                {
-                    Plugin.Log("Could not update ping data. Retrying in 10 seconds.");
-                    yield return new WaitForSeconds(10f);
-                }
+                //else
+                //{
+                //Plugin.Log("Could not update ping data. Retrying in 10 seconds.");
+                //yield return new WaitForSeconds(10f);
+                //}
             }
         }
     }
