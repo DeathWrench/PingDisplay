@@ -1,4 +1,4 @@
-using BepInEx;
+﻿using BepInEx;
 using BepInEx.Configuration;
 using HarmonyLib;
 using Steamworks;
@@ -9,9 +9,12 @@ using UnityEngine;
 
 namespace PingDisplay
 {
-    [BepInPlugin("DeathWrench.PingDisplay", "PingDisplay", "1.3.2")]
+    [BepInPlugin($"{PLUGIN_GUID}", $"{PLUGIN_NAME}", $"{PLUGIN_VERSION}")]
     public class Plugin : BaseUnityPlugin
     {
+        public const string PLUGIN_GUID = "DeathWrench.PingDisplay";
+        public const string PLUGIN_NAME = "PingDisplay";
+        public const string PLUGIN_VERSION = "1.3.3";
         public enum DisplayPosition
         {
             TopLeft,
@@ -32,7 +35,7 @@ namespace PingDisplay
         public static Plugin Instance;
         public static PingManager PingManager;
 
-        private readonly Harmony _harmony = new Harmony("DeathWrench.PingDisplay");
+        private readonly Harmony _harmony = new Harmony(PLUGIN_GUID.ToString());
 
         public void Awake()
         {
@@ -49,7 +52,7 @@ namespace PingDisplay
                 _harmony.PatchAll(typeof(HudManagerPatch));
             }
             InitPingManager();
-            base.Logger.LogInfo("Ping Display loaded!");
+            base.Logger.LogInfo($"{PLUGIN_NAME} has loaded!");
         }
 
         private static void SetupConfig<T>(ConfigEntry<T> config, Action<T> changedHandler)
